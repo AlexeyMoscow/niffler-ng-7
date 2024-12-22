@@ -8,6 +8,8 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.page.UserProfilePage;
+import guru.qa.niffler.utils.MenuItems;
 import org.junit.jupiter.api.Test;
 
 public class SpendingWebTest {
@@ -38,9 +40,27 @@ public class SpendingWebTest {
             archived = false
     )
     @Test
-    void activeCategoryShouldBePresentedInList(CategoryJson categoryJson) {
+    void activeCategoryShouldBePresentedInList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .loginUser("alex", "123456");
+                .loginUser("alex", "123456")
+                .openMenu()
+                .clickMenuItem(MenuItems.PROFILE);
+        new UserProfilePage()
+                .verifyActiveCategoryInList(category.name());
+    }
 
+    @Category(
+            username = "alex",
+            archived = true
+    )
+    @Test
+    void archivedCategoryShouldBePresentedInList(CategoryJson category) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .loginUser("alex", "123456")
+                .openMenu()
+                .clickMenuItem(MenuItems.PROFILE);
+        new UserProfilePage()
+                .switchArchivedCategoriesToggle()
+                .verifyArchivedCategoryInList(category.name());
     }
 }
