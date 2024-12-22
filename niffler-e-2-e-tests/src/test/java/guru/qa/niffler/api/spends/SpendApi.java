@@ -1,4 +1,4 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.spends;
 
 import guru.qa.niffler.model.SpendJson;
 import retrofit2.Call;

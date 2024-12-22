@@ -1,8 +1,6 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.api.spends;
 
 import guru.qa.niffler.model.SpendJson;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
