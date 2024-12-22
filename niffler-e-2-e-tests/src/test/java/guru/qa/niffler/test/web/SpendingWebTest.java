@@ -2,7 +2,9 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.Category;
 import guru.qa.niffler.jupiter.Spending;
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
@@ -29,5 +31,16 @@ public class SpendingWebTest {
                 .save();
 
         new MainPage().checkThatTableContainsSpending(newDescription);
+    }
+
+    @Category(
+            username = "alex",
+            archived = false
+    )
+    @Test
+    void activeCategoryShouldBePresentedInList(CategoryJson categoryJson) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .loginUser("alex", "123456");
+
     }
 }

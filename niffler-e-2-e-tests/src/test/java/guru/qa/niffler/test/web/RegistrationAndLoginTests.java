@@ -6,7 +6,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
-public class RegistrationTests {
+public class RegistrationAndLoginTests {
 
     private static final Config CFG = Config.getInstance();
 
