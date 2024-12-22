@@ -43,13 +43,16 @@ public class SpendingWebTest {
             archived = false
     )
     @Test
-    void activeCategoryShouldBePresentedInList(CategoryJson category) {
+    void archivedCategoryShouldBePresentedInList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginUser("alex", "123456")
                 .openMenu()
                 .clickMenuItem(MenuItems.PROFILE);
         new UserProfilePage()
-                .verifyActiveCategoryInList(category.name());
+                .archiveCategory(category.name())
+                .confirmArchiveCategory()
+                .switchArchivedCategoriesToggle()
+                .verifyArchivedCategoryInList(category.name());
     }
 
     @Category(
@@ -57,13 +60,15 @@ public class SpendingWebTest {
             archived = true
     )
     @Test
-    void archivedCategoryShouldBePresentedInList(CategoryJson category) {
+    void activeCategoryShouldBePresentedInListAfterRestored(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginUser("alex", "123456")
                 .openMenu()
                 .clickMenuItem(MenuItems.PROFILE);
         new UserProfilePage()
                 .switchArchivedCategoriesToggle()
-                .verifyArchivedCategoryInList(category.name());
+                .restoreCategory(category.name())
+                .confirmRestoreCategory()
+                .verifyActiveCategoryInList(category.name());
     }
 }

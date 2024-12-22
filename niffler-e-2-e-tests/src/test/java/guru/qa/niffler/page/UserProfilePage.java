@@ -6,18 +6,20 @@ import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.*;
 
 
 public class UserProfilePage {
 
     private final ElementsCollection
-                    activeCategories = $$(By.xpath("//div[contains(@class, 'MuiChip-colorPrimary')]")),
-                    archivedCategories = $$(By.xpath("//div[contains(@class, 'MuiChip-colorDefault')]"));
+                    activeCategories = $$(By.xpath("//div[contains(@class, 'MuiChip-colorPrimary')]/parent::div")),
+                    archivedCategories = $$(By.xpath("//div[contains(@class, 'MuiChip-colorDefault')]/parent::div"));
+
+
+    private final SelenideElement archiveButton = $x("//button[text()='Archive']");
+    private final SelenideElement restoreButton = $x("//button[text()='Unarchive']");
 
     private final SelenideElement showArchivedCategoriesToggle = $(By.xpath("//input[contains(@class, 'MuiSwitch-input')]"));
-
 
 
     public void verifyActiveCategoryInList(String categoryName) {
@@ -30,6 +32,26 @@ public class UserProfilePage {
 
     public UserProfilePage switchArchivedCategoriesToggle() {
         showArchivedCategoriesToggle.click();
+        return this;
+    }
+
+    public UserProfilePage archiveCategory(String categoryName) {
+        activeCategories.filter(text(categoryName)).first().parent().$(".MuiIconButton-sizeMedium[aria-label='Archive category']").click();
+        return this;
+    }
+
+    public UserProfilePage confirmArchiveCategory() {
+        archiveButton.click();
+        return this;
+    }
+
+    public UserProfilePage confirmRestoreCategory() {
+        restoreButton.click();
+        return this;
+    }
+
+    public UserProfilePage restoreCategory(String categoryName) {
+        archivedCategories.filter(text(categoryName)).first().parent().$(".MuiIconButton-sizeMedium[aria-label='Unarchive category']").click();
         return this;
     }
 
