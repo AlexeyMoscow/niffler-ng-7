@@ -1,7 +1,6 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
