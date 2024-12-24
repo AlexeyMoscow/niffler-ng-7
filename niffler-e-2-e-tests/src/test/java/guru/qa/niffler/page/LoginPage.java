@@ -11,9 +11,6 @@ public class LoginPage {
   private final SelenideElement submitButton = $("button[type='submit']");
 
     private final SelenideElement
-            usernameInput = $("input[name='username']"),
-            passwordInput = $("input[name='password']"),
-            submitButton = $("button[type='submit']"),
             createNewUserButton = $(".form__register"),
             errorMessageBlock = $(".form__error");
 

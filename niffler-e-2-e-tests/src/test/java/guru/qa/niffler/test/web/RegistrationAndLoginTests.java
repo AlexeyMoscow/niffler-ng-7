@@ -5,6 +5,7 @@ import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.UserRandom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -20,12 +21,12 @@ public class RegistrationAndLoginTests {
     @Test
     void shouldRegisterNewUser() {
 
-        String userName = faker.name().firstName();
-        String password = faker.internet().password(6,10);
+        String userName = UserRandom.getUserName();
+        String password = UserRandom.getPassword();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickCreateNewUserButton()
-                .registerNewUser(userName, password)
+                .registerNewUser(userName, password, password)
                 .verifyUserCreated();
     }
 
@@ -34,25 +35,25 @@ public class RegistrationAndLoginTests {
     void shouldNotRegisterNewUserWithExistedUserName() {
 
         String userName = "alex";
-        String password = faker.internet().password(6,10);
+        String password = UserRandom.getPassword();
         String errorMessage = "Username `" + userName + "` already exists";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickCreateNewUserButton()
-                .registerNewUser(userName, password)
+                .registerNewUser(userName, password, password)
                 .verifyErrorText(errorMessage);
     }
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreDifferent() {
 
-        String userName = "alex";
-        String password = faker.internet().password(6,10);
+        String userName = UserRandom.getUserName();
+        String password = UserRandom.getPassword();
         String errorMessage = "Passwords should be equal";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickCreateNewUserButton()
-                .registerNewUserWithErrorPasswordInput(userName, password)
+                .registerNewUser(userName, password, "123456")
                 .verifyErrorText(errorMessage);
     }
 

@@ -21,11 +21,12 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                 .ifPresent(category -> {
                     CategoryJson categoryJson = new CategoryJson(
                             null,
-                            "Category_" + random.nextInt(1000),
+                            "Category_" + random.nextInt(10000),
                             category.username(),
-                            category.archived()
+                            false
                     );
                     CategoryJson createdCategory = categoriesApiClient.addCategory(categoryJson);
+
                     if (category.archived()) {
                         CategoryJson categoryToBeArchived = new CategoryJson(
                                 createdCategory.id(),
@@ -54,7 +55,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public void afterTestExecution(ExtensionContext context) {
         CategoryJson categoryFromStore =
                 context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (!categoryFromStore.archived()) {
+
             CategoryJson categoryToBeArchived = new CategoryJson(
                     categoryFromStore.id(),
                     categoryFromStore.name(),
@@ -62,6 +63,5 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                     true
             );
             categoriesApiClient.updateCategory(categoryToBeArchived);
-        }
     }
 }

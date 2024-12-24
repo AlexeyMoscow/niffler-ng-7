@@ -16,18 +16,11 @@ public class RegistrationPage {
             submitButton = $(".form__submit"),
             congratulationMessage = $(".form__paragraph_success");
 
-    public RegistrationPage registerNewUser(String username, String password) {
-        usernameInput.shouldBe(visible).setValue(username);
-        passwordInput.shouldBe(visible).setValue(password);
-        submitPasswordInput.shouldBe(visible).setValue(password);
-        submitButton.click();
-        return this;
-    }
 
-    public RegistrationPage registerNewUserWithErrorPasswordInput(String username, String password) {
+    public RegistrationPage registerNewUser(String username, String password, String confirmPassword) {
         usernameInput.shouldBe(visible).setValue(username);
         passwordInput.shouldBe(visible).setValue(password);
-        submitPasswordInput.shouldBe(visible).setValue("123456");
+        submitPasswordInput.shouldBe(visible).setValue(confirmPassword);
         submitButton.click();
         return this;
     }
