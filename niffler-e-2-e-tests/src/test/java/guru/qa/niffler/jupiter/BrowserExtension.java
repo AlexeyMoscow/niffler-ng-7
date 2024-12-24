@@ -5,6 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.Allure;
 import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -28,13 +29,12 @@ public class BrowserExtension implements
     }
   }
 
-  @Override
-  public void beforeEach(ExtensionContext context) throws Exception {
-    SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
-        .savePageSource(false)
-        .screenshots(false)
-    );
-  }
+    @Override
+    public void beforeEach(ExtensionContext context) throws Exception {
+        SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
+                .savePageSource(false)
+                .screenshots(false));
+    }
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {

@@ -15,3 +15,5 @@ public record CategoryJson(
     boolean archived) {
 
 }
+
+
