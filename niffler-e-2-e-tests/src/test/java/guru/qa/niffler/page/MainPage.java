@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class MainPage {
-    private final SelenideElement spendingTable = $("#spendings");
+  private final SelenideElement spendingTable = $("#spendings");
     private final SelenideElement statisticsFigure = $("#stat");
     private final SelenideElement headerBlock = $("#root header");
     private final SelenideElement avatar = $("svg[data-testid='PersonIcon']");

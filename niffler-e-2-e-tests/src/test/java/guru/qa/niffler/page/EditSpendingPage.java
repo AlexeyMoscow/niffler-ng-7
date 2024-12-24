@@ -5,21 +5,16 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selenide.$;
 
 public class EditSpendingPage {
-    private final SelenideElement
-            descriptionInput = $("#description"),
-            saveBtn = $("#save");
+  private final SelenideElement descriptionInput = $("#description");
+  private final SelenideElement saveBtn = $("#save");
 
-    public EditSpendingPage setDescription(String description) {
-        descriptionInput.clear();
-        descriptionInput.setValue(description);
+  public EditSpendingPage setNewSpendingDescription(String description) {
+    descriptionInput.clear();
+    descriptionInput.setValue(description);
+    return this;
+  }
 
-        return this;
-    }
-
-    public MainPage save() {
-        saveBtn.click();
-
-        return new MainPage();
-    }
-
+  public void save() {
+    saveBtn.click();
+  }
 }
