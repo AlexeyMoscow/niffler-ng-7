@@ -25,7 +25,7 @@ public class FriendsPage {
         emptyFriendsTable.shouldBe(visible).shouldHave(text("There are no users yet"));
     }
 
-    public FriendsPage setValueIntoSearchInput(String value) {
+    public FriendsPage setValueIntoSearch(String value) {
         searchInput.setValue(value).sendKeys(Keys.ENTER);
         return this;
     }

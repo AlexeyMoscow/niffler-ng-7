@@ -28,7 +28,7 @@ public class FriendsWebTest {
                .clickMenuItem(MenuItems.FRIENDS);
 
        new FriendsPage()
-               .setValueIntoSearchInput(user.friend())
+               .setValueIntoSearch(user.friend())
                .verifyNameInTableByType("friends",user.friend());
    }
 
@@ -63,7 +63,7 @@ public class FriendsWebTest {
 
         new FriendsPage()
                 .switchTab()
-                .setValueIntoSearchInput(user.outcome_requests())
+                .setValueIntoSearch(user.outcome_requests())
                 .verifyUserPresentInAllPeopleTableAndCheckStatus(user.outcome_requests(), "Waiting");
     }
 }

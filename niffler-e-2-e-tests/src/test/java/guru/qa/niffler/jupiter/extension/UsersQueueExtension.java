@@ -41,7 +41,7 @@ public class UsersQueueExtension implements
         USERS_WITH_OUTCOME_REQUESTS.add(new StaticUser("userOutcome", "123456", null, null, "admin"));
     }
 
-    private static Queue<StaticUser> getQueueByType(UserType.Type userType) {
+    private Queue<StaticUser> getQueueByType(UserType.Type userType) {
        return switch (userType) {
            case EMPTY -> EMPTY_USERS;
            case WITH_FRIENDS -> USERS_WITH_FRIENDS;
@@ -61,7 +61,7 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
 
         Map<UserType, StaticUser> usersMap = new HashMap<>();
 
@@ -95,7 +95,7 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         Map<UserType,StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
         for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
