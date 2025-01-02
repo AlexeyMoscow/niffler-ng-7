@@ -46,4 +46,10 @@ public class MainPage {
         menu.shouldBe(visible);
         menuItems.find(text(menuItem.toString())).click();
     }
+
+  public MainPage checkThatPageLoaded() {
+    statComponent.should(visible).shouldHave(text("Statistics"));
+    spendingTable.should(visible).shouldHave(text("History of Spendings"));
+    return this;
+  }
 }

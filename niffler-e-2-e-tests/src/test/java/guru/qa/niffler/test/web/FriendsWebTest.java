@@ -18,7 +18,7 @@ import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Typ
 @ExtendWith({UsersQueueExtension.class, BrowserExtension.class})
 public class FriendsWebTest {
 
-    private static final Config CFG = Config.getInstance();
+  private static final Config CFG = Config.getInstance();
 
    @Test
     void friendShouldBeDisplayedInFriendsTable(@UserType(WITH_FRIENDS) StaticUser user) {

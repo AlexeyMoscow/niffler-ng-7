@@ -14,7 +14,7 @@ import guru.qa.niffler.utils.MenuItems;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class SpendingWebTest {
 
   private static final Config CFG = Config.getInstance();

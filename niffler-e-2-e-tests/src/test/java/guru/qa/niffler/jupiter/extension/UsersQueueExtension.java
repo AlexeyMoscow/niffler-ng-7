@@ -19,7 +19,7 @@ public class UsersQueueExtension implements
         AfterEachCallback,
         ParameterResolver {
 
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
     public record StaticUser (
             String username,
@@ -50,10 +50,11 @@ public class UsersQueueExtension implements
         };
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
+  @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
-    public @interface UserType {
-        Type value() default Type.EMPTY;
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface UserType {
+    Type value() default Type.EMPTY;
 
         enum Type {
             EMPTY, WITH_FRIENDS, WITH_INCOME_REQUEST, WITH_OUTCOME_REQUEST
@@ -105,13 +106,15 @@ public class UsersQueueExtension implements
             Queue<StaticUser> queue = getQueueByType(userType.value());
             queue.add(user);
         }
+      }
     }
+  }
 
-    @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return parameterContext.getParameter().getType().isAssignableFrom(StaticUser.class)
-                && AnnotationSupport.isAnnotated(parameterContext.getParameter(), UserType.class);
-    }
+  @Override
+  public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    return parameterContext.getParameter().getType().isAssignableFrom(StaticUser.class)
+        && AnnotationSupport.isAnnotated(parameterContext.getParameter(), UserType.class);
+  }
 
     @Override
     public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
