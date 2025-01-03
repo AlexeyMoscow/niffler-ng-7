@@ -10,18 +10,16 @@ import guru.qa.niffler.utils.MenuItems;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
 
 
 @ExtendWith({UsersQueueExtension.class, BrowserExtension.class})
 public class FriendsWebTest {
 
-    private static final Config CFG = Config.getInstance();
+  private static final Config CFG = Config.getInstance();
 
    @Test
-    void friendShouldBeDisplayedInFriendsTable(@UserType(WITH_FRIENDS) StaticUser user) {
+    void friendShouldBeDisplayedInFriendsTable(@UsersQueueExtension.UserType(WITH_FRIENDS) UsersQueueExtension.StaticUser user) {
        Selenide.open(CFG.frontUrl(), LoginPage.class)
                .loginUser(user.username(), user.password())
                .openMenu()
@@ -33,7 +31,7 @@ public class FriendsWebTest {
    }
 
     @Test
-    void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
+    void friendsTableShouldBeEmptyForNewUser(@UsersQueueExtension.UserType(EMPTY) UsersQueueExtension.StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginUser(user.username(), user.password())
                 .openMenu()
@@ -44,7 +42,7 @@ public class FriendsWebTest {
     }
 
     @Test
-    void incomeInvitationShouldBePresentedInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
+    void incomeInvitationShouldBePresentedInFriendsTable(@UsersQueueExtension.UserType(WITH_INCOME_REQUEST) UsersQueueExtension.StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginUser(user.username(), user.password())
                 .openMenu()
@@ -55,7 +53,7 @@ public class FriendsWebTest {
     }
 
     @Test
-    void outcomeInvitationShouldBePresentedInFriendsTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
+    void outcomeInvitationShouldBePresentedInFriendsTable(@UsersQueueExtension.UserType(WITH_OUTCOME_REQUEST) UsersQueueExtension.StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginUser(user.username(), user.password())
                 .openMenu()

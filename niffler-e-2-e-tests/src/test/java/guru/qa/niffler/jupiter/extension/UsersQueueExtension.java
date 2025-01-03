@@ -15,13 +15,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 public class UsersQueueExtension implements
-        BeforeEachCallback,
-        AfterEachCallback,
+        BeforeTestExecutionCallback,
+        AfterTestExecutionCallback,
         ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-    public record StaticUser (
+
+    public record StaticUser(
             String username,
             String password,
             String friend,
@@ -42,16 +43,16 @@ public class UsersQueueExtension implements
     }
 
     private Queue<StaticUser> getQueueByType(UserType.Type userType) {
-       return switch (userType) {
-           case EMPTY -> EMPTY_USERS;
-           case WITH_FRIENDS -> USERS_WITH_FRIENDS;
-           case WITH_INCOME_REQUEST -> USERS_WITH_INCOME_REQUESTS;
-           case WITH_OUTCOME_REQUEST -> USERS_WITH_OUTCOME_REQUESTS;
+        return switch (userType) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIENDS -> USERS_WITH_FRIENDS;
+            case WITH_INCOME_REQUEST -> USERS_WITH_INCOME_REQUESTS;
+            case WITH_OUTCOME_REQUEST -> USERS_WITH_OUTCOME_REQUESTS;
         };
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.RUNTIME)
     public @interface UserType {
         Type value() default Type.EMPTY;
 
@@ -61,13 +62,13 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) {
+    public void beforeTestExecution(ExtensionContext context) {
 
         Map<UserType, StaticUser> usersMap = new HashMap<>();
 
         List<Parameter> parameters = Arrays.stream(context.getRequiredTestMethod().getParameters())
-                        .filter(parameter -> AnnotationSupport.isAnnotated(parameter, UserType.class))
-                                .toList();
+                .filter(parameter -> AnnotationSupport.isAnnotated(parameter, UserType.class))
+                .toList();
 
         parameters.forEach(parameter -> {
             UserType userType = parameter.getAnnotation(UserType.class);
@@ -80,10 +81,10 @@ public class UsersQueueExtension implements
             }
 
             user.ifPresentOrElse(
-                    u -> {
-                usersMap.put(userType, u);
-            },
-                    () -> {throw  new IllegalStateException("User type " + userType + " not found");}        );
+                    u -> usersMap.put(userType, u),
+                    () -> {
+                        throw new IllegalStateException("User type " + userType + " not found");
+                    });
 
         });
 
@@ -95,8 +96,8 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void afterEach(ExtensionContext context) {
-        Map<UserType,StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
+    public void afterTestExecution(ExtensionContext context) {
+        Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
         for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
             StaticUser user = entry.getValue();
@@ -115,7 +116,9 @@ public class UsersQueueExtension implements
 
     @Override
     public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
-        return map.get(parameterContext.getParameter().getAnnotation(UserType.class));
+        return (StaticUser) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class)
+                .get(
+                        AnnotationSupport.findAnnotation(parameterContext.getParameter(), UserType.class).get()
+                );
     }
 }
