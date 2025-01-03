@@ -1,3 +1,4 @@
+
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
@@ -33,4 +34,3 @@ public class RegistrationPage {
         registerForm.shouldHave(text(errorText));
     }
 }
-

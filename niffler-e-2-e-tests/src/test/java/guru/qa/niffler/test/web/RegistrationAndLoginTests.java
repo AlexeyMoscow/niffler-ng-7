@@ -1,7 +1,6 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class RegistrationAndLoginTests {
 
     private static final Config CFG = Config.getInstance();
-
-    Faker faker = new Faker();
 
     LoginPage loginPage = new LoginPage();
 
