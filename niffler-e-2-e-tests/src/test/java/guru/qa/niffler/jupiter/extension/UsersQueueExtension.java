@@ -99,12 +99,14 @@ public class UsersQueueExtension implements
     public void afterTestExecution(ExtensionContext context) {
         Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
-        for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
-            StaticUser user = entry.getValue();
-            UserType userType = entry.getKey();
-            System.out.println("Returning back to queue: " + user);
-            Queue<StaticUser> queue = getQueueByType(userType.value());
-            queue.add(user);
+        if (map != null) {
+            for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
+                StaticUser user = entry.getValue();
+                UserType userType = entry.getKey();
+                System.out.println("Returning back to queue: " + user);
+                Queue<StaticUser> queue = getQueueByType(userType.value());
+                queue.add(user);
+            }
         }
     }
 
