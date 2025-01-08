@@ -2,13 +2,12 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.utils.UserRandom;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class RegistrationAndLoginTests {
 
     private static final Config CFG = Config.getInstance();
@@ -18,8 +17,8 @@ public class RegistrationAndLoginTests {
     @Test
     void shouldRegisterNewUser() {
 
-        String userName = UserRandom.getUserName();
-        String password = UserRandom.getPassword();
+        String userName = RandomDataUtils.randomUserName();
+        String password = RandomDataUtils.randomPassword();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickCreateNewUserButton()
@@ -32,7 +31,7 @@ public class RegistrationAndLoginTests {
     void shouldNotRegisterNewUserWithExistedUserName() {
 
         String userName = "alex";
-        String password = UserRandom.getPassword();
+        String password = RandomDataUtils.randomPassword();
         String errorMessage = "Username `" + userName + "` already exists";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -44,8 +43,8 @@ public class RegistrationAndLoginTests {
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreDifferent() {
 
-        String userName = UserRandom.getUserName();
-        String password = UserRandom.getPassword();
+        String userName = RandomDataUtils.randomUserName();
+        String password = RandomDataUtils.randomPassword();
         String errorMessage = "Passwords should be equal";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
