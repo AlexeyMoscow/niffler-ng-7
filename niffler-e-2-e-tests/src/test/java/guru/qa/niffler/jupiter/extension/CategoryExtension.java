@@ -59,12 +59,14 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
         CategoryJson categoryFromStore =
                 context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
 
-        CategoryJson categoryToBeArchived = new CategoryJson(
-                categoryFromStore.id(),
-                categoryFromStore.name(),
-                categoryFromStore.username(),
-                true
-        );
-        categoriesApiClient.updateCategory(categoryToBeArchived);
+        if (categoryFromStore != null) {
+            CategoryJson categoryToBeArchived = new CategoryJson(
+                    categoryFromStore.id(),
+                    categoryFromStore.name(),
+                    categoryFromStore.username(),
+                    true
+            );
+            categoriesApiClient.updateCategory(categoryToBeArchived);
+        }
     }
 }
