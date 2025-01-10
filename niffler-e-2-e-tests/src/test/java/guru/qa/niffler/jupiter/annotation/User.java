@@ -19,7 +19,7 @@ public @interface User {
 
     String username();
 
-    Category[] categories() default {};
+  Category[] categories() default {};
 
-    Spending[] spendings() default {};
+  Spending[] spendings() default {};
 }
