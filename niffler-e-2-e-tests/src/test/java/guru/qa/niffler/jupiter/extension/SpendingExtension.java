@@ -1,25 +1,24 @@
 package guru.qa.niffler.jupiter.extension;
 
 
-import guru.qa.niffler.api.spends.SpendApiClient;
-
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import org.apache.commons.lang3.ArrayUtils;
+import guru.qa.niffler.service.SpendDbClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
 
 
-public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
+public class SpendingExtension implements BeforeEachCallback, AfterTestExecutionCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
 
-  private final SpendApiClient spendApiClient = new SpendApiClient();
+  private final SpendDbClient spendDbClient = new SpendDbClient();
+
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -44,7 +43,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                                 spendingAnnotation.description(),
                                 userAnnotation.username()
                         );
-                        SpendJson createdSpend = spendApiClient.createSpend(spend);
+                        SpendJson createdSpend = spendDbClient.createSpend(spend);
                         context.getStore(NAMESPACE).put(context.getUniqueId(), createdSpend);
                     }
                 });
@@ -59,4 +58,13 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
   public SpendJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
     return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), SpendJson.class);
   }
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) {
+        SpendJson spend = context.getStore(NAMESPACE).get(context.getUniqueId(), SpendJson.class);
+        if (spend != null) {
+            spendDbClient.deleteSpend(spend);
+            spendDbClient.deleteCategory(spend.category());
+        }
+    }
 }
