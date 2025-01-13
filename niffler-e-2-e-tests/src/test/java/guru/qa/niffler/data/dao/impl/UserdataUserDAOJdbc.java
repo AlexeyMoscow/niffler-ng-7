@@ -22,7 +22,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
                     Statement.RETURN_GENERATED_KEYS
             )) {
                 statement.setString(1, user.getUsername());
-                statement.setObject(2, user.getCurrency());
+                statement.setString(2, String.valueOf(user.getCurrency()));
                 statement.setString(3, user.getFirstname());
                 statement.setString(4, user.getSurname());
                 statement.setBytes(5, user.getPhoto());
@@ -63,7 +63,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
                         user.setId(rs.getObject("id", UUID.class));
                         user.setUsername(rs.getString("username"));
-                        user.setCurrency(rs.getObject("currency", CurrencyValues.class));
+                        user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         user.setFirstname(rs.getString("firstname"));
                         user.setSurname(rs.getString("surname"));
                         user.setPhoto(rs.getBytes("photo"));
@@ -95,7 +95,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
                         user.setId(rs.getObject("id", UUID.class));
                         user.setUsername(rs.getString("username"));
-                        user.setCurrency(rs.getObject("currency", CurrencyValues.class));
+                        user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         user.setFirstname(rs.getString("firstname"));
                         user.setSurname(rs.getString("surname"));
                         user.setPhoto(rs.getBytes("photo"));

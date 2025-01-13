@@ -13,7 +13,7 @@ public interface CategoryDao {
 
   Optional<CategoryEntity> findCategoryById(UUID id);
 
-  Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) throws SQLException;
+  Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName);
 
   List<CategoryEntity> findAllByUsername(String username);
 

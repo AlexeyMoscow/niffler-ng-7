@@ -65,15 +65,16 @@ public class SpendDaoJdbc implements SpendDao {
         try (ResultSet resultSet = statement.getResultSet()) {
           if (resultSet.next()) {
             SpendEntity spend = new SpendEntity();
+            CategoryEntity category = new CategoryEntity();
 
             spend.setId(resultSet.getObject("id", UUID.class));
+            spend.setId(resultSet.getObject("category_id", UUID.class));
             spend.setUsername(resultSet.getString("username"));
             spend.setSpendDate(resultSet.getDate("spend_date"));
-            spend.setCurrency(resultSet.getObject("currency", CurrencyValues.class));
+            spend.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
             spend.setAmount(resultSet.getDouble("amount"));
             spend.setDescription(resultSet.getString("description"));
-            spend.setCategory(resultSet.getObject("category_id", CategoryEntity.class));
-
+            spend.setCategory(category);
 
             return Optional.of(spend);
           } else {
@@ -97,15 +98,17 @@ public class SpendDaoJdbc implements SpendDao {
         try (ResultSet resultSet = statement.executeQuery()) {
           while (resultSet.next()) {
             SpendEntity spend = new SpendEntity();
+            CategoryEntity category = new CategoryEntity();
 
             spend.setId(resultSet.getObject("id", UUID.class));
+            spend.setId(resultSet.getObject("category_id", UUID.class));
             spend.setUsername(resultSet.getString("username"));
             spend.setSpendDate(resultSet.getDate("spend_date"));
-            spend.setCurrency(resultSet.getObject("currency", CurrencyValues.class));
+            spend.setCurrency(CurrencyValues.valueOf(resultSet.getString("currency")));
             spend.setAmount(resultSet.getDouble("amount"));
             spend.setDescription(resultSet.getString("description"));
             spend.setCategory(resultSet.getObject("category_id", CategoryEntity.class));
-
+            spend.setCategory(category);
             spends.add(spend);
           }
         }
