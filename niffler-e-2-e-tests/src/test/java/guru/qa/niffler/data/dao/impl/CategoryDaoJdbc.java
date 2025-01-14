@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 
@@ -19,9 +18,15 @@ public class CategoryDaoJdbc implements CategoryDao {
 
   private static final Config CFG = Config.getInstance();
 
+  private final Connection connection;
+
+  public CategoryDaoJdbc(Connection connection) {
+    this.connection = connection;
+  }
+
   @Override
   public CategoryEntity create(CategoryEntity category) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+
       try (PreparedStatement ps = connection.prepareStatement(
               "INSERT INTO category (username, name, archived) " +
                       "VALUES (?, ?, ?)",
@@ -41,7 +46,7 @@ public class CategoryDaoJdbc implements CategoryDao {
         }
         category.setId(generatedKey);
         return category;
-      }
+
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -49,23 +54,21 @@ public class CategoryDaoJdbc implements CategoryDao {
 
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-          "SELECT * FROM category WHERE id = ?"
-      )) {
-        ps.setObject(1, id);
-        ps.execute();
-        try (ResultSet rs = ps.getResultSet()) {
-          if (rs.next()) {
-            CategoryEntity ce = new CategoryEntity();
-            ce.setId(rs.getObject("id", UUID.class));
-            ce.setUsername(rs.getString("username"));
-            ce.setName(rs.getString("name"));
-            ce.setArchived(rs.getBoolean("archived"));
-            return Optional.of(ce);
-          } else {
-            return Optional.empty();
-          }
+    try (PreparedStatement ps = connection.prepareStatement(
+        "SELECT * FROM category WHERE id = ?"
+    )) {
+      ps.setObject(1, id);
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        if (rs.next()) {
+          CategoryEntity ce = new CategoryEntity();
+          ce.setId(rs.getObject("id", UUID.class));
+          ce.setUsername(rs.getString("username"));
+          ce.setName(rs.getString("name"));
+          ce.setArchived(rs.getBoolean("archived"));
+          return Optional.of(ce);
+        } else {
+          return Optional.empty();
         }
       }
     } catch (SQLException e) {
