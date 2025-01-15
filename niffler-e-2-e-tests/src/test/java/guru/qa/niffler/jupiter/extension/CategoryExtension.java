@@ -1,39 +1,68 @@
 package guru.qa.niffler.jupiter.extension;
 
+import com.github.jknack.handlebars.internal.lang3.ArrayUtils;
+import guru.qa.niffler.api.categories.CategoriesApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.service.SpendDbClient;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
-public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
+public class CategoryExtension implements
+        BeforeEachCallback,
+        AfterTestExecutionCallback,
+        ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
-    private final SpendDbClient spendDbClient = new SpendDbClient();
+
+    private final CategoriesApiClient categoriesApiClient = new CategoriesApiClient();
 
     @Override
-    public void beforeEach(ExtensionContext context) {
+    public void beforeEach(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
-                .ifPresent(userAnnotation -> {
-
-                    if (userAnnotation.categories().length > 0) {
-                        Category categoryAnnotation = userAnnotation.categories()[0];
+                .ifPresent(userAnno -> {
+                    if (ArrayUtils.isNotEmpty(userAnno.categories())) {
+                        Category categoryAnno = userAnno.categories()[0];
                         CategoryJson category = new CategoryJson(
                                 null,
                                 randomCategoryName(),
-                                userAnnotation.username(),
-                                categoryAnnotation.archived()
+                                userAnno.username(),
+                                categoryAnno.archived()
                         );
 
-                        // Создаем категорию через DB
-                        CategoryJson createdCategory = spendDbClient.createCategory(category);
+                        CategoryJson created = categoriesApiClient.addCategory(category);
+                        if (categoryAnno.archived()) {
+                            CategoryJson archivedCategory = new CategoryJson(
+                                    created.id(),
+                                    created.name(),
+                                    created.username(),
+                                    true
+                            );
+                            created = categoriesApiClient.updateCategory(archivedCategory);
+                        }
 
-                        context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
+                        context.getStore(NAMESPACE).put(
+                                context.getUniqueId(),
+                                created
+                        );
                     }
                 });
+    }
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) throws Exception {
+        CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
+        if (category != null && !category.archived()) {
+            category = new CategoryJson(
+                    category.id(),
+                    category.name(),
+                    category.username(),
+                    true
+            );
+            categoriesApiClient.updateCategory(category);
+        }
     }
 
     @Override
@@ -44,15 +73,5 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     @Override
     public CategoryJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
-    }
-
-    @Override
-    public void afterTestExecution(ExtensionContext context) {
-        CategoryJson categoryFromStore =
-                context.getStore(CategoryExtension.NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-
-        if (categoryFromStore != null) {
-            spendDbClient.deleteCategory(categoryFromStore);
-        }
     }
 }
