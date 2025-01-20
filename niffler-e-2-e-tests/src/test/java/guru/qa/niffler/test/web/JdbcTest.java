@@ -10,6 +10,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Disabled
 public class JdbcTest {
@@ -74,5 +78,27 @@ public class JdbcTest {
         )
     );
     System.out.println(user);
+  }
+
+  @Test
+  void testFindAllSpringSpends() {
+    SpendDbClient spendDbClient = new SpendDbClient();
+
+    List<SpendJson> spends = spendDbClient.findAllSpendsSpring();
+
+    System.out.println(spends);
+    assertNotNull(spends, "Spends should not be null");
+    assertFalse(spends.isEmpty(), "Spends list should not be empty");
+  }
+
+  @Test
+  void testFindAllSpringCategories() {
+    SpendDbClient spendDbClient = new SpendDbClient();
+
+    List<CategoryJson> categories = spendDbClient.findAllCategoriesSpring();
+
+    System.out.println(categories);
+    assertNotNull(categories, "Categories should not be null");
+    assertFalse(categories.isEmpty(), "Categories list should not be empty");
   }
 }
