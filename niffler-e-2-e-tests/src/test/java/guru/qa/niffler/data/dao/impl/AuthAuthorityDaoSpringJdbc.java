@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthAuthorityRowMapper;
@@ -13,11 +14,11 @@ import java.util.List;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
-  private final DataSource dataSource;
+    private final DataSource dataSource;
 
-  public AuthAuthorityDaoSpringJdbc(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+    public AuthAuthorityDaoSpringJdbc(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
   @Override
   public void create(AuthorityEntity... authority) {
