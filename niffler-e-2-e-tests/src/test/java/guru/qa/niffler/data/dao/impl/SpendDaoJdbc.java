@@ -54,7 +54,7 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public List<SpendEntity> findAll() {
     List<SpendEntity> spends = new ArrayList<>();
-    try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM spend");
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement("SELECT * FROM \"spend\"");
          ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         SpendEntity spend = new SpendEntity();
@@ -64,7 +64,6 @@ public class SpendDaoJdbc implements SpendDao {
         spend.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
         spend.setAmount(rs.getDouble("amount"));
         spend.setDescription(rs.getString("description"));
-
         CategoryEntity category = new CategoryEntity();
         category.setId(rs.getObject("category_id", UUID.class));
         spend.setCategory(category);
@@ -75,5 +74,19 @@ public class SpendDaoJdbc implements SpendDao {
       throw new RuntimeException(e);
     }
     return spends;
+  }
+
+  @Override
+  public void deleteSpend(SpendEntity spend) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+            "DELETE FROM spend WHERE id = ?"
+    )) {
+
+      ps.setObject(1, spend.getId());
+      ps.executeUpdate();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

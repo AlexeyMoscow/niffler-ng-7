@@ -48,6 +48,19 @@ public class CategoryDaoJdbc implements CategoryDao {
   }
 
   @Override
+  public void deleteCategory(CategoryEntity category) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+            "DELETE FROM category WHERE id = ?"
+    )) {
+      ps.setObject(1, category.getId());
+      ps.executeUpdate();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
         "SELECT * FROM category WHERE id = ?"
@@ -74,7 +87,7 @@ public class CategoryDaoJdbc implements CategoryDao {
   @Override
   public List<CategoryEntity> findAll() {
     List<CategoryEntity> categories = new ArrayList<>();
-    try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM category");
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement("SELECT * FROM \"category\"");
          ResultSet rs = ps.executeQuery()) {
       while (rs.next()) {
         CategoryEntity category = new CategoryEntity();

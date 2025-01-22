@@ -21,8 +21,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-        "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
-            "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+            "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getPassword());
       ps.setBoolean(3, user.getEnabled());
@@ -77,18 +77,20 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   @Override
   public List<AuthUserEntity> findAll() {
     List<AuthUserEntity> users = new ArrayList<>();
-    try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"user\"")) {
+    try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+            "SELECT * FROM \"user\""
+    )) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          AuthUserEntity user = new AuthUserEntity();
-          user.setId(rs.getObject("id", UUID.class));
-          user.setUsername(rs.getString("username"));
-          user.setPassword(rs.getString("password"));
-          user.setEnabled(rs.getBoolean("enabled"));
-          user.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-          user.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-          user.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
-          users.add(user);
+          AuthUserEntity ue = new AuthUserEntity();
+          ue.setId(rs.getObject("id", UUID.class));
+          ue.setUsername(rs.getString("username"));
+          ue.setPassword(rs.getString("password"));
+          ue.setEnabled(rs.getBoolean("enabled"));
+          ue.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+          ue.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+          ue.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+          users.add(ue);
         }
       }
     } catch (SQLException e) {

@@ -71,7 +71,7 @@ public class UdUserDaoJdbc implements UdUserDao {
   @Override
   public List<UserEntity> findAll() {
     List<UserEntity> users = new ArrayList<>();
-    try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM \"user\"")) {
+    try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ? ")) {
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           UserEntity user = new UserEntity();
