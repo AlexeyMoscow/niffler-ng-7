@@ -5,7 +5,9 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import java.util.List;
 
 public interface SpendDao {
-  SpendEntity create(SpendEntity spend);
+    SpendEntity create(SpendEntity spend);
 
     List<SpendEntity> findAll();
+
+    void deleteSpend(SpendEntity spend);
 }
